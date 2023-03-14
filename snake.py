@@ -3,6 +3,8 @@ import turtle
 import random
 from playsound import playsound
 from threading import Thread
+from tkinter import PhotoImage
+from turtle import Shape, Turtle
 
 # Define program constants
 WIDTH = 500
@@ -72,7 +74,14 @@ def game_loop():
             snake.pop(0)  # Keep the snake same length unless fed
         print(snake)
 
-        for segment in snake:
+        # direction for snake head
+        snake_head_x, snake_head_y = snake[-1]
+        print('snake head x ',snake_head_x, 'snake head y ',snake_head_y)
+        snake_head.goto(snake_head_x, snake_head_y)
+        snake_head.stamp()
+        snake_head.clearstamps()
+
+        for segment in snake[:-1]:
             stamper.goto(segment[0], segment[1])
             stamper.stamp()
 
@@ -87,7 +96,7 @@ def food_collision():
     global food_pos, score
     if get_distance(snake[-1], food_pos) < 20:
 
-        # to play sound when snake catches food in parallel start a new thread
+        # New thread to play sound in parallel when snake catches food
         T = Thread(target=playy)  # create thread
         T.start()  # Launch created thread
 
@@ -134,11 +143,18 @@ screen.tracer(0)
 screen.listen()
 bind_direction_keys()
 
-# Create snake
+# Create snake head
+snake_head = turtle.Turtle(visible=False)
+larger = PhotoImage(file="snake_head.gif").subsample(7, 7)
+screen.addshape("larger", Shape("image", larger))
+snake_head = Turtle("larger")
+snake_head.penup()
+
+
+# Create snake body
 stamper = turtle.Turtle()
-# turtle.register_shape('snake.gif')
-# stamper.shape('snake.gif')
-stamper.shape("square")
+stamper.shape("circle")
+stamper.color('green')
 stamper.penup()
 
 # Food
