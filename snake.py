@@ -1,6 +1,8 @@
 # Import the Turtle Graphics module
 import turtle
 import random
+from playsound import playsound
+from threading import Thread
 
 # Define program constants
 WIDTH = 500
@@ -43,6 +45,12 @@ def set_snake_direction(direction):
             snake_direction = "right"
 
 
+def playy():
+    # Play sound when snake catches food
+    path_sound = '/Users/mariyakashif/PycharmProjects/SnakeGame/food.mp3'
+    playsound(path_sound, block=False)
+
+
 def game_loop():
     stamper.clearstamps()
 
@@ -78,6 +86,11 @@ def game_loop():
 def food_collision():
     global food_pos, score
     if get_distance(snake[-1], food_pos) < 20:
+
+        # to play sound when snake catches food in parallel start a new thread
+        T = Thread(target=playy)  # create thread
+        T.start()  # Launch created thread
+
         score += 1
         food_pos = get_random_food_pos()
         food.goto(food_pos)
